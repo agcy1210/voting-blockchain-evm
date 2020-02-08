@@ -6,7 +6,25 @@
       "hash": "fir57-h45h",
       "data": [],
       "publicKey": "x",
-      "signature": "sign"
+      "signature": "sign",
+      "candidatePubKey": "cand-pu8ke7",
+      "referenceNo": "1234"
+    },
+    {
+      "timestamp": 1581155904890,
+      "lastHash": "fir57-h45h",
+      "hash": "d9b3c551c32e7581ea07d251790c8365992d71274dcc052f02edd1dad4b12dd3",
+      "data": {
+        "candidateId": "123132"
+      },
+      "publicKey": "049221a227fc736603b6216c9ecced183c9ee4f90cba3e25ad53b344b840f09a56fd28a4809d0035fc3baf049506606448579ab141cbb9b0d164bb49d21511fabc",
+      "signature": {
+        "r": "d83fcfdc82e91543f132d6f1a355710884b9dd3e61f3742a722e7fbcc863cd09",
+        "s": "9f24828f5edf961c58c0a7fc103325b607ff7916737d97d5f8ad0e4ed5a72f99",
+        "recoveryParam": 0
+      },
+      "candidatePubKey": "323423234",
+      "referenceNo": "234234232"
     }
   ]
 }

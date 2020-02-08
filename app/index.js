@@ -7,7 +7,7 @@ const { BACKUP_PATH, BACKUP_DIR } = require('../config');
 const ChainUtil = require('../chain-util');
 const axios = require('axios');
 
-const HTTP_PORT = process.env.HTTP_PORT || 3001;
+const HTTP_PORT = process.env.HTTP_PORT || 3003;
 
 const app = express();
 const bc = new Blockchain();
@@ -54,14 +54,14 @@ app.get('/api/block/:publicKey', (req, res) => {
 
 //used to add a new block in the chain
 app.post('/api/mine', async (req, res) => {
-	const block = bc.addBlock(req.body.data);
+	const block = bc.addBlock(req.body.data.data, req.body.data.candidatePubKey, req.body.data.referenceNo);
 	console.log(`New block added: ${block.toString()}`);
 
 	p2pServer.syncChains();
 
-	await axios.post('http://localhost:4000/api/update/publicKey', {
-		userId: req.body.userId,
-		publicKey: block.publicKey
+	await axios.post('http://localhost:4000/api/voter-publickey', {
+		public_key: block.publicKey,
+		reference_no: block.referenceNo
 	})
 		.then((el) => console.log("success"))
 		.catch((e) => console.log(e));
@@ -69,27 +69,8 @@ app.post('/api/mine', async (req, res) => {
 	res.redirect('/api/blocks');
 });
 
-
-app.post('/api/update', async (req,res) => {
-	const block = bc.update(req.body.publicKey, req.body.update);
-
-	p2pServer.syncChains();
-
-
-	await axios.post('http://localhost:4000/api/update/publicKey', {
-		userId: req.body.userId,
-		publicKey: block.publicKey
-	})
-		.then((el) => console.log("success"))
-		.catch((e) => console.log(e));
-
-	res.json({ message: block });
-
-
-});
-
 app.post('/api/verify', (req, res) => {
-	res.json({ message: bc.verifyDetails(req.body.publicKey, req.body.data) });
+	res.json({ message: bc.verifyDetails(req.body.data.referenceNo) });
 });
 
 app.post('/api/peers/add', (req, res) => {

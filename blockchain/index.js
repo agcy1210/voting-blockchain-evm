@@ -7,10 +7,10 @@ class Blockchain {
         this.chain = [Block.genesis()];
     }
 
-    addBlock(data) {
+    addBlock(data, candidatePubKey, referenceNo) {
         // as chain is a list we can get the last block by index one less than current
         const lastBlock = this.chain[this.chain.length - 1];
-        const block = Block.mineBlock(lastBlock, data);
+        const block = Block.mineBlock(lastBlock, data, candidatePubKey, referenceNo);
         this.chain.push(block);
 
         ChainUtil.backupBlockchain(this.chain);        
@@ -52,42 +52,15 @@ class Blockchain {
         this.chain = newChain;
     }
 
-    update(publicKey, data) {
-        const chain = this.chain;
-
-        let blocks = chain.filter(block => {
-            return block.publicKey === publicKey;
-        });
-
-        const recentBlock = blocks[blocks.length - 1];
-        const newData = JSON.parse(JSON.stringify(recentBlock.data));
-        const updateCardIndex = newData.findIndex((el) => {
-            return el.type === data.type;
-        });
-
-        if(updateCardIndex === -1) {
-            return "Card not found!";
-        } else if(data.id === newData[updateCardIndex].data.id) {
-            let updationKeys = Object.keys(data.dataUpdation);
-            for(let i=0;i<updationKeys.length;i++) {
-                if(updationKeys[i] !== "id") {
-                    newData[updateCardIndex].data[updationKeys[i]] = data.dataUpdation[updationKeys[i]];
-                }
-            }
-
-            return this.addBlock(newData);
-        } else {
-            return `${data.type.toUpperCase()} id doesn't match!`;
-        }
-    }
-
-    verifyDetails(pubKey, data) {
+    verifyDetails(referenceNo) {
         let block = this.chain.filter(block => {
-            return block.publicKey === pubKey;
+            return block.referenceNo === referenceNo;
         })[0];
+        
 
         if(block){
-            return Block.verify(pubKey, data, block);
+            let pubKey = block.publicKey;
+            return Block.verify(pubKey, block, referenceNo);
         } else {
             return "Block not found";
         }
