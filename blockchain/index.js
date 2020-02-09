@@ -65,6 +65,22 @@ class Blockchain {
             return "Block not found";
         }
     }
+
+    generateResults() {
+        let candidates_results = {};
+        this.chain.forEach(block => {
+            console.log(block.candidatePubKey)
+            if(candidates_results[block.candidatePubKey] === undefined) {
+                console.log(block);
+                candidates_results[block.candidatePubKey] = 1;
+            } else {
+                let prevResult = candidates_results[block.candidatePubKey];
+                candidates_results[block.candidatePubKey] = prevResult + 1
+            }
+        });
+        console.log(candidates_results)
+        return candidates_results;
+    }
 }
 
 module.exports = Blockchain;

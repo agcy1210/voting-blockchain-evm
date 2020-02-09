@@ -6,7 +6,7 @@ const fs = require('fs');
 const { BACKUP_PATH, BACKUP_DIR } = require('../config');
 const ChainUtil = require('../chain-util');
 const axios = require('axios');
-
+const cors = require('cors');
 const HTTP_PORT = process.env.HTTP_PORT || 3003;
 
 const app = express();
@@ -16,7 +16,7 @@ const p2pServer = new P2pServer(bc);
 
 //body parser is used to recieve data from post request in a specific format
 app.use(bodyParser.json());
-
+app.use(cors());
 //ChainUtil.removeBackupFile();
 //backup file for storing chain
 if (!fs.existsSync(BACKUP_DIR)) {
@@ -76,6 +76,10 @@ app.post('/api/verify', (req, res) => {
 app.post('/api/peers/add', (req, res) => {
 	const message = p2pServer.addPeers(req.body.peers);
 	res.json({ message });
+});
+
+app.post('/api/results', (req, res) => {
+	res.json({ results: bc.generateResults() });
 });
 
 app.listen(HTTP_PORT, () => console.log(`Listening on port ${HTTP_PORT}`));
