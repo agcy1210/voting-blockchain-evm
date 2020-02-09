@@ -78,7 +78,7 @@ app.post('/api/peers/add', (req, res) => {
 	res.json({ message });
 });
 
-app.post('/api/results', (req, res) => {
+app.get('/api/results', (req, res) => {
 	res.json({ results: bc.generateResults() });
 });
 
